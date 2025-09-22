@@ -1,0 +1,558 @@
+<html lang="zh-CN"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的个人主页</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        body {
+            background-color: #fafafa;
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* 头部导航 - 宜家蓝 */
+        header {
+            background-color: #0058A3;
+            color: white;
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        header.scrolled {
+            padding: 10px 0;
+            background-color: #0058A3e6;
+            backdrop-filter: blur(5px);
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            transition: transform 0.3s ease;
+        }
+        .logo:hover {
+            transform: scale(1.05);
+        }
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s;
+            position: relative;
+            padding: 5px 0;
+            font-weight: 500;
+        }
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #FFCC00;
+            transition: width 0.3s ease;
+        }
+        nav a:hover {
+            color: #FFCC00;
+        }
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        /* 英雄区域 - 柔和渐变 */
+        .hero {
+            background: linear-gradient(135deg, #0058A3, #0071BB);
+            color: white;
+            padding: 100px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.6;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: fadeUp 1s forwards 0.3s;
+        }
+        .hero h2 {
+            font-size: 42px;
+            margin-bottom: 25px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        .hero p {
+            font-size: 19px;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        .hero-btn {
+            display: inline-block;
+            background-color: #FFCC00;
+            color: #333;
+            padding: 12px 30px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .hero-btn:hover {
+            background-color: #FFD633;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* 通用区块样式 */
+        section {
+            padding: 80px 0;
+            position: relative;
+        }
+        section:nth-child(even) {
+            background-color: #f5f5f5;
+        }
+        section h2 {
+            text-align: center;
+            font-size: 32px;
+            margin-bottom: 50px;
+            color: #0058A3;
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transform: translate(-50%, 20px);
+            transition: all 0.6s ease;
+        }
+        section.visible h2 {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+        section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background-color: #FFCC00;
+        }
+
+        /* 信息卡片 */
+        .info-card {
+            background: white;
+            border-radius: 8px;
+            padding: 35px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 35px;
+        }
+        .info-item {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+        section.visible .info-item {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        section.visible .info-item:nth-child(1) { transition-delay: 0.1s; }
+        section.visible .info-item:nth-child(2) { transition-delay: 0.2s; }
+        section.visible .info-item:nth-child(3) { transition-delay: 0.3s; }
+        .info-item h3 {
+            color: #0058A3;
+            margin-bottom: 20px;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .info-item h3 i {
+            color: #FFCC00;
+            font-size: 22px;
+        }
+        .info-item ul {
+            list-style: none;
+        }
+        .info-item li {
+            margin-bottom: 12px;
+            padding-left: 25px;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        .info-item li:hover {
+            padding-left: 30px;
+            color: #0058A3;
+        }
+        .info-item li::before {
+            content: "•";
+            color: #0058A3;
+            position: absolute;
+            left: 0;
+            font-size: 20px;
+            line-height: 1;
+        }
+
+        /* 页脚 */
+        footer {
+            background-color: #0058A3;
+            color: white;
+            text-align: center;
+            padding: 40px 0 20px;
+        }
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.3s ease;
+        }
+        .contact-item:hover {
+            transform: translateY(-3px);
+        }
+        .contact-item i {
+            color: #FFCC00;
+        }
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        .social-links a {
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        .social-links a:hover {
+            background-color: #FFCC00;
+            color: #333;
+            transform: translateY(-5px);
+        }
+        footer p {
+            margin-top: 20px;
+            opacity: 0.8;
+            font-size: 14px;
+        }
+
+        /* 动画效果 */
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 滚动进度条 */
+        .progress-container {
+            width: 100%;
+            height: 3px;
+            background: transparent;
+            position: fixed;
+            top: 0;
+            z-index: 101;
+        }
+        .progress-bar {
+            height: 3px;
+            background: #FFCC00;
+            width: 0%;
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            nav ul {
+                flex-direction: column;
+                gap: 10px;
+                align-items: center;
+            }
+            .hero h2 {
+                font-size: 32px;
+            }
+            section {
+                padding: 60px 0;
+            }
+            section h2 {
+                font-size: 26px;
+            }
+            .info-card {
+                padding: 25px;
+            }
+            .contact-info {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+        }
+
+        /* 9:16比例优化 */
+        @media (max-aspect-ratio: 9/16) {
+            .hero {
+                padding: 150px 0;
+            }
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            section {
+                padding: 100px 0;
+            }
+            .info-item {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 滚动进度条 -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- 头部导航 -->
+    <header id="mainHeader">
+        <div class="container header-content">
+            <div class="logo">我的个人主页</div>
+            <nav>
+                <ul>
+                    <li><a href="#hero">首页</a></li>
+                    <li><a href="#about">关于我</a></li>
+                    <li><a href="#skills">技能</a></li>
+                    <li><a href="#experience">实践经历</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 英雄区域 -->
+    <section class="hero" id="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h2>活力满格，做不被定义的自己</h2>
+                <p>这里记录我的学习、实践与兴趣，欢迎了解我的故事~</p>
+                <a href="#about" class="hero-btn">了解更多</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 关于我板块 -->
+    <section id="about">
+        <div class="container">
+            <h2>关于我</h2>
+            <div class="info-card">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <h3><i class="fas fa-graduation-cap"></i> 毕业院校 &amp; 学习时长</h3>
+                        <ul>
+                            <li>山东师范大学 - 计算机科学与技术专业</li>
+                            <li>本科四年（2024.09 - 2028.06）</li>
+                        </ul>
+                    </div>
+                    <div class="info-item">
+                        <h3><i class="fas fa-trophy"></i> 优势学科 &amp; 比赛经历</h3>
+                        <ul>
+                            <li>数据结构（绩点4.4）、高数（绩点4.2）</li>
+                            <li>2025年山东省大学生程序设计竞赛二等奖</li>
+                            <li>2025年蓝桥杯省级二等奖</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 技能板块 -->
+    <section id="skills">
+        <div class="container">
+            <h2>擅长技能</h2>
+            <div class="info-card">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <h3><i class="fas fa-code"></i> 专业技能</h3>
+                        <ul>
+                            <li>前端开发：HTML5、CSS3、JavaScript、React框架</li>
+                            <li>后端基础：Python、Node.js（Express框架）</li>
+                            <li>工具：Git版本控制、Figma界面设计</li>
+                        </ul>
+                    </div>
+                    <div class="info-item">
+                        <h3><i class="fas fa-lightbulb"></i> 软技能</h3>
+                        <ul>
+                            <li>团队协作：曾担任项目组长，协调5人开发小组</li>
+                            <li>问题解决：擅长分析需求，拆解复杂技术问题</li>
+                            <li>学习能力：持续关注前端新技术（如Vue3、TypeScript）</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 实践经历板块 -->
+    <section id="experience">
+        <div class="container">
+            <h2>实践经历</h2>
+            <div class="info-card">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <h3><i class="fas fa-project-diagram"></i> 项目实践</h3>
+                        <ul>
+                            <li>XX在线教育平台（前端开发）：负责课程列表、用户中心模块，使用React+AntD实现，支持多端适配</li>
+                            <li>个人博客系统（全栈开发）：基于Node.js+MongoDB开发，实现文章发布、评论、分类功能</li>
+                        </ul>
+                    </div>
+                    <div class="info-item">
+                        <h3><i class="fas fa-university"></i> 校园经历</h3>
+                        <ul>
+                            <li>校学生会技术部部长：组织校园技术分享会，策划“编程入门训练营”</li>
+                            <li>班级学习委员：牵头建立学科答疑小组，帮助同学提升编程成绩</li>
+                        </ul>
+                    </div>
+                    <div class="info-item">
+                        <h3><i class="fas fa-heart"></i> 兴趣爱好 &amp; 自我评价</h3>
+                        <ul>
+                            <li>爱好：篮球（校队成员）、摄影（擅长风光拍摄）、阅读（技术类书籍为主）</li>
+                            <li>自我评价：严谨细致，对技术有热情，善于在实践中总结成长</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>example@email.com</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <span>123-4567-8910</span>
+                    </div>
+                </div>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-github"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-weixin"></i></a>
+                    <a href="#"><i class="fab fa-weibo"></i></a>
+                </div>
+            </div>
+            <p>版权所有 © 2025 我的个人主页</p>
+        </div>
+    </footer>
+
+    <script>
+        // 平滑滚动（点击导航跳转）
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                document.querySelector(targetId).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // 滚动进度条
+        window.onscroll = function() {
+            // 进度条更新
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById("progressBar").style.width = scrolled + "%";
+
+            // 头部导航栏滚动效果
+            const header = document.getElementById("mainHeader");
+            if (winScroll > 50) {
+                header.classList.add("scrolled");
+            } else {
+                header.classList.remove("scrolled");
+            }
+
+            // 滚动显示动画
+            const sections = document.querySelectorAll("section");
+            sections.forEach(section => {
+                const sectionTop = section.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                
+                if (sectionTop < windowHeight * 0.75) {
+                    section.classList.add("visible");
+                }
+            });
+        };
+
+        // 页面加载时触发一次滚动检查，确保可见区域元素正确显示
+        window.addEventListener('load', function() {
+            window.dispatchEvent(new Event('scroll'));
+        });
+    </script>
+
+
+</body></html>
